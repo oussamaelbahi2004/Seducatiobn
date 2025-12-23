@@ -3,259 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار شامل في علوم التربية - 50 سؤال</title>
+    <title>QCM علوم التربية - مصحح</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .quiz-container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 700px;
-            text-align: right;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #7f8c8d;
-        }
-        .question-box {
-            margin-bottom: 20px;
-        }
-        .question-text {
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .option-btn {
-            background: #ecf0f1;
-            border: 2px solid #bdc3c7;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            text-align: right;
-            transition: all 0.3s;
-            font-family: inherit;
-        }
-        .option-btn:hover:not([disabled]) {
-            background: #d5dbdb;
-        }
-        .option-btn.correct {
-            background-color: #d4edda;
-            border-color: #28a745;
-            color: #155724;
-        }
-        .option-btn.wrong {
-            background-color: #f8d7da;
-            border-color: #dc3545;
-            color: #721c24;
-        }
-        .feedback {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-        .next-btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-top: 20px;
-            width: 100%;
-            display: none;
-        }
-        .next-btn:hover {
-            background-color: #2980b9;
-        }
-        .result-box {
-            text-align: center;
-            display: none;
-        }
-        .score-circle {
-            width: 150px;
-            height: 150px;
-            background: #3498db;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2em;
-            margin: 20px auto;
-            font-weight: bold;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
+        .container { background: white; width: 100%; max-width: 800px; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; font-size: 22px; }
+        .stats { display: flex; justify-content: space-between; font-weight: bold; color: #555; margin-bottom: 20px; background: #ecf0f1; padding: 10px; border-radius: 8px; }
+        .question { font-size: 1.2em; font-weight: bold; margin-bottom: 15px; color: #333; line-height: 1.5; }
+        .options button { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; text-align: right; font-size: 1em; transition: 0.2s; }
+        .options button:hover:not([disabled]) { background-color: #f9f9f9; border-color: #bbb; }
+        .correct { background-color: #d4edda !important; border-color: #28a745 !important; color: #155724; }
+        .wrong { background-color: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+        .feedback { margin-top: 15px; padding: 10px; border-radius: 5px; font-weight: bold; display: none; text-align: center; }
+        #nextBtn { display: none; width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1em; margin-top: 15px; cursor: pointer; }
+        #nextBtn:hover { background: #2980b9; }
+        #result { text-align: center; display: none; }
+        .score-box { font-size: 3em; color: #3498db; margin: 20px 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="quiz-container" id="quizContainer">
-    <h1>اختبار علوم التربية (ENS)</h1>
-    
+<div class="container" id="quizPanel">
+    <h1>اختبار علوم التربية (ENS) - 50 سؤال</h1>
     <div class="stats">
-        <span id="questionCount">السؤال: 1 / 50</span>
-        <span id="scoreCount">النتيجة: 0</span>
+        <span id="qCount">السؤال: 1 / 50</span>
+        <span id="sCount">النقاط: 0</span>
     </div>
-
-    <div class="question-box">
-        <div class="question-text" id="questionText">جاري تحميل السؤال...</div>
-        <div class="options" id="optionsContainer">
-            </div>
-    </div>
-
-    <div class="feedback" id="feedbackMsg"></div>
-    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">السؤال التالي</button>
+    <div class="question" id="qText">جاري التحميل...</div>
+    <div class="options" id="optContainer"></div>
+    <div class="feedback" id="feedback"></div>
+    <button id="nextBtn" onclick="nextQ()">السؤال التالي</button>
 </div>
 
-<div class="quiz-container result-box" id="resultContainer">
-    <h1>نتيجة الاختبار</h1>
-    <p>لقد أتممت 50 سؤالاً في علوم التربية.</p>
-    <div class="score-circle" id="finalScore">0/50</div>
-    <p id="appreciationMsg"></p>
-    <button class="next-btn" style="display:block" onclick="location.reload()">إعادة المحاولة</button>
+<div class="container" id="result" style="display:none;">
+    <h1>النتيجة النهائية</h1>
+    <div class="score-box" id="finalScore">0/50</div>
+    <p id="msg"></p>
+    <button id="nextBtn" style="display:block; background:#2ecc71" onclick="location.reload()">إعادة الاختبار</button>
 </div>
 
 <script>
-    // قاعدة بيانات الأسئلة - 50 سؤال شامل من الـ PDF
-    const questions = [
-        {
-            q: "لغوياً، يتكون مصطلح 'البيداغوجيا' من شقين (Péda) و (Agoge). في السياق اليوناني القديم، إلى ماذا كان يشير هذا المصطلح أصلاً؟",
-            options: ["فن التدريس الذي يمارسه المعلمون في المدارس.", "العبد المكلف بمرافقة الطفل وقيادته.", "الفيلسوف الذي ينظر في قضايا التربية.", "طرق تنظيم التعلم داخل الفصل."],
-            answer: 1
-        },
-        {
-            q: "ما هو الفرق الدقيق بين 'الديداكتيك العام' و'الديداكتيك الخاص'؟",
-            options: ["الديداكتيك العام يهتم بالتعليم الابتدائي، والخاص بالتعليم الثانوي.", "الديداكتيك العام يدرس مبادئ التدريس بصرف النظر عن المادة، بينما الخاص يدرس خصوصيات كل مادة.", "الديداكتيك العام هو علم التربية، والخاص هو البيداغوجيا.", "لا يوجد فرق، هما مصطلحان لشيء واحد."],
-            answer: 1
-        },
-        {
-            q: "في 'المثلث الديداكتيكي'، يمثل القطب 'الإبستمولوجي' العلاقة بين:",
-            options: ["المدرس والمتعلم (علاقة تعاقد).", "المتعلم والمعرفة (علاقة تمثل).", "المدرس والمعرفة (النقل الديداكتيكي).", "المدرسة والمجتمع."],
-            answer: 2
-        },
-        {
-            q: "عرف 'جون ديوي' التربية بأنها:",
-            options: ["إعداد الفرد ليحيى حياة كاملة.", "عملية تكيف بين الفرد وبيئته، وهي الحياة نفسها.", "تكوين الأفراد تكويناً اجتماعياً.", "إضفاء الجمال والكمال على الجسم والنفس."],
-            answer: 1
-        },
-        {
-            q: "أي من العلاقات التالية تمثل 'علاقة التمثل' (Représentation) في المثلث الديداكتيكي؟",
-            options: ["العلاقة بين المدرس والمعرفة.", "العلاقة بين المدرس والمتعلم.", "العلاقة بين المتعلم والمعرفة.", "العلاقة بين المؤسسة والأسرة."],
-            answer: 2
-        },
-        {
-            q: "صاحب مقولة 'الإنسان يولد صفحة بيضاء (Tabula Rasa)' وأن المعرفة تأتي من التجربة هو:",
-            options: ["جان جاك روسو.", "جون ديوي.", "جون لوك.", "إيمانويل كانط."],
-            answer: 2
-        },
-        {
-            q: "ما هو المفهوم الذي يشير إلى 'الفرق بين ما يمكن للطفل فعله بمفرده وما يمكنه فعله بمساعدة الآخرين' حسب فيجوتسكي؟",
-            options: ["الذكاءات المتعددة.", "المنطقة القريبة من التطور (ZPD).", "الصراع المعرفي.", "التعلم بالاستبصار."],
-            answer: 1
-        },
-        {
-            q: "أي اتجاه فلسفي يعتبر أن 'الإنسان روح وعقل قبل أن يكون جسداً' ويهدف لتنمية الأخلاق؟",
-            options: ["الاتجاه الطبيعي.", "الاتجاه البراغماتي.", "الاتجاه المثالي.", "الاتجاه التجريبي."],
-            answer: 2
-        },
-        {
-            q: "في الاتجاه البراغماتي (النفعي)، تقاس قيمة المعرفة بـ:",
-            options: ["مدى مطابقتها للمنطق المجرد.", "مدى نفعها العملي وقدرتها على حل المشكلات.", "مدى توافقها مع النصوص الدينية.", "مدى استنادها إلى التأمل الفلسفي."],
-            answer: 1
-        },
-        {
-            q: "من هو العالم الذي أسس نظريته على مراحل 'النمو المعرفي' (الحسية الحركية، العمليات المجردة...)؟",
-            options: ["ليف فيجوتسكي.", "جان بياجي.", "واطسون.", "بستالوتزي."],
-            answer: 1
-        },
-        {
-            q: "مصطلح 'النقل الديداكتيكي' يعني:",
-            options: ["نقل التلاميذ من مستوى دراسي لآخر.", "تحويل المعرفة العالمة إلى معرفة قابلة للتدريس.", "نقل القيم من المجتمع إلى المدرسة.", "طريقة جلوس التلاميذ في القسم."],
-            answer: 1
-        },
-        {
-            q: "أي من هؤلاء الفلاسفة دعا إلى 'التربية الطبيعية' وضرورة ترك الطفل ينمو وفق قوانين الطبيعة بعيداً عن قيود المجتمع؟",
-            options: ["أفلاطون.", "جون لوك.", "جان جاك روسو.", "هربرت سبنسر."],
-            answer: 2
-        },
-        {
-            q: "ما هو الدور الرئيسي للمربي في 'الاتجاه الطبيعي'؟",
-            options: ["ملقن للمعارف وناقل للقيم.", "ملاحظ ومرافق يحترم إيقاع نمو المتعلم.", "منظم للتجارب العلمية الصارمة.", "ميسر للمشاريع الاجتماعية."],
-            answer: 1
-        },
-        {
-            q: "نظرية 'الجشتالت' (Gestalt) التي تركز على الإدراك الكلي، من أبرز روادها:",
-            options: ["بافلوف وسكينر.", "كوهلر وكوفكا وفرتهيمر.", "ديوي وجيمس.", "بياجي وبرونر."],
-            answer: 1
-        },
-        {
-            q: "من هو صاحب 'نظرية الذكاءات المتعددة'؟",
-            options: ["هاورد غاردنر.", "أبراهام ماسلو.", "بنيامين بلوم.", "كارل روجرز."],
-            answer: 0
-        },
-        {
-            q: "عرّف 'دوركهايم' (Durkheim) التربية بأنها:",
-            options: ["تكوين الأفراد تكويناً اجتماعياً.", "بناء خُلق الطفل بما يليق بالمجتمع الفاضل.", "تنمية القدرات العقلية للفرد.", "عملية تكيف مع البيئة."],
-            answer: 0
-        },
-        {
-            q: "أي علم يفسر 'آليات التعلم ونمو المتعلم' ضمن علوم التربية؟",
-            options: ["علم الاجتماع.", "الفلسفة.", "علم النفس.", "الديداكتيك."],
-            answer: 2
-        },
-        {
-            q: "المنهج السقراطي في التربية (المايوتيك) يعتمد أساساً على:",
-            options: ["التلقين المباشر.", "الحوار والجدل (طرح الأسئلة) لتوليد المعرفة.", "التجربة المخبرية.", "الملاحظة الصامتة."],
-            answer: 1
-        },
-        {
-            q: "ابن خلدون في مقدمته ركز في التربية على أهمية:",
-            options: ["القسوة في التعليم لضبط المتعلمين.", "التدرج في التعليم وتعلم الحرف والصنائع.", "حفظ المتون دون فهم.", "فصل التعليم عن الواقع الاجتماعي."],
-            answer: 1
-        },
-        {
-            q: "النظرية التي تعتبر التعلم تغيراً في السلوك ناتجاً عن مثير واستجابة هي:",
-            options: ["النظرية البنائية.", "النظرية السلوكية.", "النظرية الجشتالتية.", "النظرية المعرفية."],
-            answer: 1
-        },
-        {
-            q: "ما هي العلاقة التي تربط بين 'المدرس' و'المتعلم' في المثلث الديداكتيكي؟",
-            options: ["علاقة النقل الديداكتيكي.", "علاقة التمثل.", "علاقة التعاقد الديداكتيكي.", "علاقة الصراع السوسيومعرفي."],
-            answer: 2
-        },
-        {
-            q: "أي اتجاه فلسفي يعتمد منهج 'التجربة والاستنتاج' والملاحظة العلمية؟",
-            options: ["الاتجاه المثالي.", "الاتجاه الطبيعي.", "الاتجاه التجريبي.", "الاتجاه الروحي."],
+// قاعدة البيانات: 50 سؤال دقيق من PDF
+const db = [
+    { q: "ما هو الأصل اللغوي لكلمة 'بيداغوجيا' (Pédagogie)؟", o: ["علم الطفل", "قيادة الطفل (المرافق)", "فن التدريس", "علم النفس"], a: 1 },
+    { q: "الديداكتيك يهتم أساساً بالعلاقة بين:", o: ["المدرسة والمجتمع", "الإدارة والأساتذة", "المدرس والمتعلم والمعرفة", "الآباء والأبناء"], a: 2 },
+    { q: "القطب 'الإبستمولوجي' في المثلث الديداكتيكي يربط بين:", o: ["المدرس والمعرفة", "المتعلم والمعرفة", "المدرس والمتعلم", "المعرفة والمجتمع"], a: 0 },
+    { q: "مفهوم 'النقل الديداكتيكي' يعني:", o: ["نقل التلميذ من مستوى لآخر", "تحويل المعرفة العالمة لمعرفة قابلة للتدريس", "نقل القيم الأخلاقية", "النقل المدرسي"], a: 1 },
+    { q: "من هو صاحب نظرية 'العقل اللوحي' (Tabula Rasa)؟", o: ["جون ديوي", "جان بياجي", "جون لوك", "كانط"], a: 2 },
+    { q: "ماذا يقصد بـ ZPD عند فيجوتسكي؟", o: ["منطقة الراحة النفسية", "المنطقة القريبة من التطور", "منطقة الذاكرة الدائمة", "منطقة الذكاء المنطقي"], a: 1 },
+    { q: "الاتجاه الفلسفي الذي يعتبر 'المعرفة نفعية' هو:", o: ["المثالي", "الطبيعي", "البراغماتي", "التجريبي"], a: 2 },
+    { q: "مؤسس التربية الطبيعية ومؤلف كتاب 'إميل' هو:", o: ["بستالوتزي", "روسو", "مونتيسوري", "فروبل"], a: 1 },
+    { q: "النظرية التي تركز على 'المثير والاستجابة' هي:", o: ["البنائية", "السلوكية", "الجشتالتية", "المعرفية"], a: 1 },
+    { q: "من رواد النظرية البنائية (Constructivism):", o: ["واطسون", "سكينر", "جان بياجي", "فيجوتسكي"], a: 2 },
+    { q: "القطب السيكولوجي في المثلث الديداكتيكي يمثل علاقة:", o: ["التمثل (المتعلم والمعرفة)", "التعاقد (المدرس والمتعلم)", "النقل (المدرس والمعرفة)", "السلطة"], a: 0 },
+    { q: "حسب 'جون ديوي'، التربية هي:", o: ["إعداد للحياة الآخرة", "حشو للأذهان", "الحياة نفسها وعملية نمو", "نقل للتراث فقط"], a: 2 },
+    { q: "المنهج السقراطي يعتمد على:", o: ["المحاضرة", "الحوار والتوليد", "التجربة المخبرية", "الحفظ"], a: 1 },
+    { q: "ابن خلدون دعا في مقدمته إلى:", o: ["الشدة على المتعلمين", "التدرج في التعليم وتعلم الصنائع", "إلغاء التعليم المهني", "التركيز على الفلسفة فقط"], a: 1 },
+    { q: "النظرية التي تقول 'الكل أكبر من مجموع الأجزاء' هي:", o: ["السلوكية", "الجشتالتية", "البنائية", "التحليل النفسي"], a: 1 },
+    { q: "صاحب نظرية الذكاءات المتعددة هو:", o: ["بياجي", "هاورد غاردنر", "بلوم", "مازلو"], a: 1 },
+    { q: "دور المدرس في الاتجاه البراغماتي هو:", o: ["ملقن", "مراقب صارم", "ميسر ومنظم للمشاريع", "حارس"], a: 2 },
+    { q: "الهدف من التربية في الاتجاه المثالي هو:", o: ["كسب المال", "تنمية العقل والقيم الأخلاقية", "التمتع بالطبيعة", "التكيف البيولوجي"], a: 1 },
+    { q: "ما هو 'التعاقد الديداكتيكي'؟", o: ["عقد عمل الأستاذ", "مجموع القواعد التي تنظم العلاقة بين المدرس والمتعلم", "اتفاقية شراكة", "دفتر النصوص"], a: 1 },
+    { q: "من رواد النظرية السلوكية:", o: ["بافلوف وسكينر", "ديوي وجيمس", "بياجي وبرونر", "كانط وهيجل"], a: 0 },
+    { q: "الديداكتيك العام يهتم بـ:", o: ["تدريس الرياضيات فقط", "المبادئ العامة للتدريس بغض النظر عن المادة", "علم النفس", "الإدارة"], a: 1 },
+    { q: "النظرية البنائية الاجتماعية تركز على دور:", o: ["التفاعل الاجتماعي واللغة", "النضج البيولوجي فقط", "التكرار", "الثواب والعقاب"], a: 0 },
+    { q: "أي فيلسوف قال 'التربية هي إضفاء الجمال والكمال على الجسم والنفس'؟", o: ["أرسطو", "أفلاطون", "الغزالي", "ديكارت"], a: 1 },
+    { q: "الاتجاه التجريبي (Empiricism) يؤمن بأن مصدر المعرفة هو:", o: ["العقل الفطري", "الوحي", "التجربة والملاحظة الحسية", "الحدس"], a: 2 },
+    { q: "من خصائص التربية في العصور البدائية أنها كانت:", o: ["نظامية", "تعتمد على الكتابة", "تقليدية وعفوية (المحاكاة)", "علمية"], a: 2 },
+    { q: "النظرية التي تعتمد على 'الاستبصار' (Insight) في التعلم هي:", o: ["الجشتالتية", "السلوكية", "البنائية", "المعرفية"], a: 0 },
+    { q: "من العوامل المؤثرة في النظام التربوي المغربي:", o: ["المناخ", "فلسفة المجتمع وقيمه", "عدد المدارس", "التوقيت"], a: 1 },
+    { q: "بيير بورديو (Pierre Bourdieu) معروف بنظرية:", o: ["الذكاء العاطفي", "رأس المال الثقافي", "التربية السلبية", "المدرسة النشطة"], a: 1 },
+    { q: "التربية عند 'هربرت سبنسر' تهدف إلى:", o: ["إعداد الفرد للحياة الكاملة", "خدمة الكنيسة", "التأمل الصوفي", "الطاعة العمياء"], a: 0 },
+    { q: "المدرس في الاتجاه الطبيعي (عند روسو) يجب أن يكون:", o: ["مسيطراً", "ملاحظاً ومرافقاً للنمو الطبيعي", "ملقناً", "قاضياً"], a: 1 },
+    { q: "أي علم يدرس 'الظواهر التربوية في سياقها الاجتماعي'؟", o: ["علم النفس", "الديداكتيك", "علم الاجتماع التربوي", "الفلسفة"], a: 2 },
+    { q: "التعلم بالمشروع (Pédagogie de projet) يندرج ضمن الاتجاه:", o: ["المثالي", "البراغماتي", "السلوكي", "التقليدي"], a: 1 },
+    { q: "كلمة Agoge في المصطلح اليوناني تعني:", o: ["الطفل", "المدرسة", "القيادة والتوجيه", "الكتاب"], a: 2 },
+    { q: "الديداكتيك الخاص يهتم بـ:", o: ["طرق التدريس عامة", "خصوصيات تدريس مادة معينة", "علم نفس الطفل", "القوانين الإدارية"], a: 1 },
+    { q: "مراحل النمو المعرفي الأربعة (الحسي الحركي...) هي من وضع:", o: ["فرويد", "بياجي", "واطسون", "ديوي"], a: 1 },
+    { q: "النظرية التي ترى العقل 'علبة سوداء' هي:", o: ["المعرفية", "السلوكية", "البنائية", "الإنسانية"], a: 1 },
+    { q: "أي اتجاه يعتمد 'الحوار الفلسفي' كمنهج؟", o: ["التجريبي", "المثالي", "البراغماتي", "الطبيعي"], a: 1 },
+    { q: "من هو مؤلف كتاب 'الجمهورية'؟", o: ["سقراط", "أرسطو", "أفلاطون", "ابن رشد"], a: 2 },
+    { q: "فيجوتسكي يعتبر أن التعلم يسبق:", o: ["النمو", "الولادة", "المدرسة", "اللغة"], a: 0 },
+    { q: "مصطلح 'Pedagogy' حالياً يشير إلى:", o: ["مراقبة الأطفال", "فن وعلم التدريس", "تاريخ التعليم", "علم التشريح"], a: 1 },
+    { q: "التعلم بالاكتشاف هو جوهر الاتجاه:", o: ["السلوكي", "الطبيعي", "المثالي", "التحليلي"], a: 1 },
+    { q: "من رواد الاتجاه التجريبي:", o: ["جون لوك وفرنسيس بيكون", "أفلاطون وكانط", "روسو وبستالوتزي", "ديوي وجيمس"], a: 0 },
+    { q: "التقويم في البيداغوجيا يهدف أساساً إلى:", o: ["معاقبة التلميذ", "تحسين العملية التعليمية", "طرد الكسلاء", "إرضاء الإدارة"], a: 1 },
+    { q: "المثلث الديداكتيكي يوضح العلاقات بين:", o: ["ثلاثة تلاميذ", "أقطاب العملية التعليمية التعلمية", "الإدارة والوزارة", "الأسرة والمدرسة"], a: 1 },
+    { q: "التربية الحديثة تركز على:", o: ["المعلم كمركز", "المتعلم كفاعل نشيط", "الكتاب المدرسي فقط", "الحفظ"], a: 1 },
+    { q: "أهم مفكر في 'التربية التقدمية' هو:", o: ["جون ديوي", "سكينر", "فرويد", "هيربارت"], a: 0 },
+    { q: "النظرية الجشتالتية ظهرت في:", o: ["أمريكا", "ألمانيا", "روسيا", "فرنسا"], a: 1 },
+    { q: "التعلم عند السلوكيين هو:", o: ["تغير في البنية المعرفية", "تغير في السلوك الخارجي", "عملية اجتماعية", "نضج بيولوجي"], a: 1 },
+    { q: "مفهوم 'الممارسة التأملية' يعني:", o: ["التفكير في الممارسات المهنية لتطويرها", "التأمل في الطبيعة", "الصلاة", "النوم"], a: 0 },
+    { q: "علوم التربية تتميز بأنها:", o: ["علم واحد", "مجموعة علوم متداخلة", "فن فقط", "فلسفة فقط"], a: 1 }
+];
+
+let currentIdx = 0;
+let score = 0;
+const qText = document.getElementById("qText");
+const optContainer = document.getElementById("optContainer");
+const feedback = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
+const qCount = document.getElementById("qCount");
+const sCount = document.getElementById("sCount");
+const quizPanel = document.getElementById("quizPanel");
+const resultPanel = document.getElementById("result");
+const finalScore = document.getElementById("finalScore");
+const msg = document.getElementById("msg");
+
+function loadQ() {
+    // التأكد من أن الأسئلة موجودة
+    if(!db || db.length === 0) { qText.innerText = "خطأ في تحميل الأسئلة"; return; }
+    
+    const item = db[currentIdx];
+    qText.innerText = item.q;
+    optContainer.innerHTML = "";
+    feedback.style.display = "none";
+    nextBtn.style.display = "none";
+    qCount.innerText = `السؤال: ${currentIdx + 1} / ${db.length}`;
+    
+    item.o.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => check(i, btn, item.a);
+        optContainer.appendChild(btn);
+    });
+}
+
+function check(choice, btn, correct) {
+    const allBtns = optContainer.querySelectorAll("button");
+    allBtns.forEach(b => b.disabled = true);
+    
+    if(choice === correct) {
+        btn.classList.add("correct");
+        feedback.innerText = "أحسنت! إجابة صحيحة";
+        feedback.className = "feedback correct";
+        score++;
+        sCount.innerText = `النقاط: ${score}`;
+    } else {
+        btn.classList.add("wrong");
+        allBtns[correct].classList.add("correct");
+        feedback.innerText = `خطأ! الإجابة الصحيحة هي: ${db[currentIdx].o[correct]}`;
+        feedback.className = "feedback wrong";
+    }
+    feedback.style.display = "block";
+    nextBtn.style.display = "block";
+}
+
+function nextQ() {
+    currentIdx++;
+    if(currentIdx < db.length) {
+        loadQ();
+    } else {
+        showRes();
+    }
+}
+
+function showRes() {
+    quizPanel.style.display = "none";
+    resultPanel.style.display = "block";
+    finalScore.innerText = `${score} / ${db.length}`;
+    
+    if(score >= 40) msg.innerText = "ممتاز! ضبطتي المادة مزيان تبارك الله عليك.";
+    else if(score >= 25) msg.innerText = "مزيان، ولكن مازال خاصك مراجعة لشي محاور.";
+    else msg.innerText = "النتيجة ضعيفة، عاود راجع الـ PDF وركز على المفاهيم.";
+}
+
+// بدء الاختبار
+loadQ();
+</script>
+
+</body>
+</html>
+لاتجاه المثالي.", "الاتجاه الطبيعي.", "الاتجاه التجريبي.", "الاتجاه الروحي."],
             answer: 2
         },
         {
