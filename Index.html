@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار شامل - علوم التربية (Partie 02)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --correct-color: #27ae60;
+            --wrong-color: #c0392b;
+            --bg-color: #f4f6f7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .quiz-container {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            transition: transform 0.2s;
+        }
+
+        .question-box:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            text-align: right;
+            font-size: 1em;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            background-color: #f0f8ff;
+            border-color: var(--accent-color);
+        }
+
+        .correct {
+            background-color: #d4edda !important;
+            border-color: var(--correct-color) !important;
+            color: #155724;
+        }
+        .correct::after { content: "✔"; position: absolute; left: 15px; font-weight: bold; }
+
+        .wrong {
+            background-color: #f8d7da !important;
+            border-color: var(--wrong-color) !important;
+            color: #721c24;
+        }
+        .wrong::after { content: "✖"; position: absolute; left: 15px; font-weight: bold; }
+
+        .disabled { pointer-events: none; opacity: 0.9; }
+
+        /* ستايل النتيجة النهائية */
+        .result-box {
+            display: none; /* مخفي في البداية */
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+            display: block;
+            margin: 10px 0;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress {
+            text-align: left;
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>اختبار علوم التربية (ENS)</h1>
+        <div class="subtitle">30 سؤالاً شاملاً بناءً على Partie 02</div>
+
+        <div id="final-result" class="result-box">
+            <h2>انتهى الاختبار!</h2>
+            <span class="score-number" id="score-display">0 / 30</span>
+            <p id="feedback-msg"></p>
+            <button onclick="location.reload()" style="padding:10px 20px; border:none; border-radius:5px; cursor:pointer; background:white; color:#764ba2; font-weight:bold; margin-top:15px;">إعادة الاختبار</button>
+        </div>
+
+        <div id="quiz-content">
+            </div>
+    </div>
+
+    <script>
+        /* قاعدة بيانات الأسئلة - 30 سؤال مستخرج من الـ PDF */
+        const questions = [
+            // --- المحور 1: العوامل والمحطات التاريخية ---
+            {
+                q: "1. ما هي المبادئ الأربعة التي ركزت عليها مرحلة ما بعد الاستقلال (1956-1980)؟",
+                o: ["الجودة، الحكامة، الرقمنة، التكوين", "التعميم، التوحيد، المغربة، التعريب", "الإنصاف، الجودة، الارتقاء، الريادة", "الكفايات، الأهداف، المضامين، الإدماج"],
+                a: 1
+            },
+            {
+                q: "2. ماذا يقصد بـ 'المغربة' (Marocanisation)؟",
+                o: ["جعل الثقافة المغربية هي الوحيدة في المناهج", "إحلال الأطر المغربية محل الأطر الأجنبية", "تدريس تاريخ المغرب فقط", "منع السفر للخارج"],
+                a: 1
+            },
+            {
+                q: "3. ما هو التحدي الأكبر الذي واجه عملية 'التعريب'؟",
+                o: ["رفض المجتمع للغة العربية", "ضعف مواكبة سوق الشغل والتعليم العالي", "صعوبة اللغة العربية", "قلة الكتب المدرسية"],
+                a: 1
+            },
+            {
+                q: "4. مرحلة 'التقويم الهيكلي' (الثمانينيات) تميزت بـ:",
+                o: ["زيادة ميزانية التعليم", "ضغط المؤسسات الدولية وتقليص النفقات", "توظيف واسع للأساتذة", "بناء مدارس ضخمة"],
+                a: 1
+            },
+            
+            // --- المحور 2: المرتكزات والغايات ---
+            {
+                q: "5. 'النظام التربوي' حسب الميثاق هو:",
+                o: ["مجموع المدارس الخاصة فقط", "مجموع المؤسسات والآليات التي تعنى بالتربية", "وزارة التربية الوطنية فقط", "الجامعات والمعاهد العليا"],
+                a: 1
+            },
+            {
+                q: "6. أي مما يلي يُعتبر من الغايات الكبرى للنظام التربوي؟",
+                o: ["تكوين مواطن مستهلك", "تكوين مواطن مؤمن بالله ومتمسك بثوابته", "التركيز على اللغات الأجنبية فقط", "إلغاء التربية الدينية"],
+                a: 1
+            },
+            {
+                q: "7. الأهداف 'الإجرائية' تتميز بأنها:",
+                o: ["عامة وفلسفية", "قابلة للملاحظة والقياس بدقة", "تتحقق على المدى البعيد جداً", "تركز على القيم الوجدانية فقط"],
+                a: 1
+            },
+            
+            // --- المحور 3: الاختيارات البيداغوجية ---
+            {
+                q: "8. 'بيداغوجيا المضمون' (المحتويات) تعتبر الأستاذ:",
+                o: ["موجهاً ومرشداً", "ناقلاً مباشراً للمعرفة", "شريكاً للمتعلم", "ملاحظاً فقط"],
+                a: 1
+            },
+            {
+                q: "9. من سلبيات 'بيداغوجيا الأهداف' (PPO):",
+                o: ["تجزيء التعلم والتركيز على سلوكيات ميكانيكية", "غموض الأهداف", "إعطاء حرية مفرطة للمتعلم", "عدم التخطيط للدرس"],
+                a: 0
+            },
+            {
+                q: "10. متى تم اعتماد 'بيداغوجيا الكفايات' رسمياً؟",
+                o: ["بعد الاستقلال مباشرة", "مع الميثاق الوطني (2000)", "مع البرنامج الاستعجالي (2009)", "سنة 2015"],
+                a: 1
+            },
+            {
+                q: "11. تركز المقاربة بالكفايات أساساً على:",
+                o: ["الحفظ والاستظهار", "حل الوضعيات المشكلة ودمج المعارف", "سلطة الأستاذ المطلقة", "كثرة الامتحانات الكتابية"],
+                a: 1
+            },
+            
+            // --- المحور 4: الإصلاحات الكبرى (وثائق) ---
+            {
+                q: "12. ما هي الوثيقة التي اعتبرت 'أكبر وثيقة إصلاحية' وجاءت بالكفايات؟",
+                o: ["الكتاب الأبيض", "الميثاق الوطني للتربية والتكوين", "القانون الإطار", "الرؤية الاستراتيجية"],
+                a: 1
+            },
+            {
+                q: "13. 'البرنامج الاستعجالي' (2009-2012) جاء بهدف:",
+                o: ["إلغاء الميثاق الوطني", "معالجة تعثرات تطبيق الميثاق وتسريع الإصلاح", "تقليص عدد المدارس", "تغيير لغة التدريس للإنجليزية"],
+                a: 1
+            },
+            {
+                q: "14. شعار الرؤية الاستراتيجية (2015-2030) هو:",
+                o: ["التعليم للجميع", "من أجل مدرسة الإنصاف والجودة والارتقاء", "مدرسة النجاح", "نحو تعليم رقمي"],
+                a: 1
+            },
+            {
+                q: "15. 'القانون الإطار 51.17' يتميز بأنه:",
+                o: ["قانون ملزم للدولة والمجتمع", "مجرد توصيات غير ملزمة", "تقرير لجمعية مدنية", "مشروع خاص بالتعليم العالي"],
+                a: 0
+            },
+
+            // --- المحور 5: المشاريع الحالية (المدارس الرائدة TaRL) ---
+            {
+                q: "16. مشروع 'المدارس الرائدة' يهدف أساساً إلى:",
+                o: ["توزيع اللوحات الإلكترونية", "تحسين التعلمات الأساس وتجاوز التعثرات", "بناء ملاعب رياضية", "زيادة العطل المدرسية"],
+                a: 1
+            },
+            {
+                q: "17. ماذا تعني اختصار TaRL؟",
+                o: ["Teaching at the Right Level", "Teaching and Reading Language", "Teacher at Real Life", "Testing all Right Lessons"],
+                a: 0
+            },
+            {
+                q: "18. في مقاربة TaRL، يتم تقسيم التلاميذ بناءً على:",
+                o: ["أعمارهم", "مستواهم الدراسي (القسم)", "مستواهم الفعلي في الأداء (عبر روائز)", "حروفهم الأبجدية"],
+                a: 2
+            },
+            {
+                q: "19. الخطوة الأولى في تطبيق TaRL هي:",
+                o: ["التدريس المباشر", "التشخيص (الروائز)", "التقويم الإشهادي", "توزيع الكتب"],
+                a: 1
+            },
+            {
+                q: "20. يهدف برنامج TaRL لمعالجة التعثرات في:",
+                o: ["العلوم والفيزياء", "القراءة والحساب", "التربية البدنية", "التاريخ والجغرافيا"],
+                a: 1
+            },
+
+            // --- المحور 6: التعليم الأولي والهدر المدرسي ---
+            {
+                q: "21. الفئة العمرية المستهدفة في تعميم التعليم الأولي هي:",
+                o: ["2-3 سنوات", "4-5 سنوات", "6-7 سنوات", "أقل من سنتين"],
+                a: 1
+            },
+            {
+                q: "22. برنامج 'تيسير' هو برنامج لـ:",
+                o: ["الدعم التربوي", "الدعم المالي المشروط للأسر", "النقل المدرسي", "الإطعام المدرسي"],
+                a: 1
+            },
+            {
+                q: "23. تستهدف 'التربية غير النظامية':",
+                o: ["المتفوقين دراسياً", "الأطفال المنقطعين لإعادة إدماجهم", "تلاميذ التعليم الخصوصي", "الطلبة الجامعيين"],
+                a: 1
+            },
+
+            // --- المحور 7: التكوين والرقمنة والتحديات ---
+            {
+                q: "24. يتم التكوين الأساس للأساتذة حالياً في:",
+                o: ["الجامعات فقط", "المراكز الجهوية لمهن التربية والتكوين (CRMEF)", "المدارس الابتدائية مباشرة", "الوزارة بالرباط"],
+                a: 1
+            },
+            {
+                q: "25. من مشاريع التحول الرقمي في المنظومة:",
+                o: ["منصة مسار", "منصة تيك توك", "فيسبوك", "يوتيوب"],
+                a: 0
+            },
+            {
+                q: "26. مراجعة المناهج الدراسية حالياً تتجه نحو:",
+                o: ["تكييف وتخفيف المحتويات والتركيز على الكفايات", "زيادة عدد الكتب", "إلغاء المواد العلمية", "العودة للحفظ"],
+                a: 0
+            },
+            {
+                q: "27. من مخاطر التعليم الخصوصي (الأنظمة الأجنبية) المذكورة:",
+                o: ["ارتفاع الأسعار", "تهديد الهوية وتعميق الفوارق الاجتماعية", "صعوبة المناهج", "بعد المسافة"],
+                a: 1
+            },
+            {
+                q: "28. 'المغرب الجديد' في التعليم يتطلب حسب الخلاصة:",
+                o: ["موارد مالية فقط", "تعبئة شاملة للفاعلين وثقافة المساءلة", "بناء مدارس أكثر", "استيراد مناهج أجنبية"],
+                a: 1
+            },
+            {
+                q: "29. التعليم الأولي يعتبر الآن:",
+                o: ["ترفاً للأغنياء", "أولوية وطنية لتعميم الولوج", "غير ضروري", "مسؤولية الأسر فقط"],
+                a: 1
+            },
+            {
+                q: "30. الهدف الأسمى للإصلاحات الحالية هو بناء مدرسة:",
+                o: ["نخبوية", "منصفة، دامجة، وذات جودة", "مجانية ولكن ضعيفة", "خاصة بالأذكياء فقط"],
+                a: 1
+            }
+        ];
+
+        let score = 0;
+        let answeredCount = 0;
+        const totalQuestions = questions.length;
+        const quizContent = document.getElementById('quiz-content');
+        const finalResult = document.getElementById('final-result');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackMsg = document.getElementById('feedback-msg');
+
+        function loadQuiz() {
+            questions.forEach((q, index) => {
+                // إنشاء حاوية السؤال
+                const qBox = document.createElement('div');
+                qBox.className = 'question-box';
+                
+                // نص السؤال
+                const qTitle = document.createElement('div');
+                qTitle.className = 'question-text';
+                qTitle.innerText = q.q;
+                qBox.appendChild(qTitle);
+
+                // الخيارات
+                const optsDiv = document.createElement('div');
+                optsDiv.className = 'options-container';
+
+                q.o.forEach((optText, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = optText;
+                    btn.onclick = () => checkAnswer(btn, i, q.a, optsDiv);
+                    optsDiv.appendChild(btn);
+                });
+
+                qBox.appendChild(optsDiv);
+                
+                // إضافة عداد صغير للسؤال
+                const prog = document.createElement('div');
+                prog.className = 'progress';
+                prog.innerText = `سؤال ${index + 1} من ${totalQuestions}`;
+                qBox.appendChild(prog);
+
+                quizContent.appendChild(qBox);
+            });
+        }
+
+        function checkAnswer(btn, selectedIndex, correctIndex, container) {
+            const allBtns = container.querySelectorAll('.option-btn');
+            
+            // منع النقر مرة أخرى
+            if (btn.classList.contains('disabled')) return;
+
+            // التحقق
+            if (selectedIndex === correctIndex) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                allBtns[correctIndex].classList.add('correct');
+            }
+
+            // تعطيل كل الأزرار في هذا السؤال
+            allBtns.forEach(b => b.classList.add('disabled'));
+
+            // زيادة العداد والتحقق من النهاية
+            answeredCount++;
+            if (answeredCount === totalQuestions) {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            // الصعود للأعلى
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // إخفاء الأسئلة (اختياري، أو تركها للمراجعة)
+            // quizContent.style.display = 'none'; 
+            
+            // إظهار النتيجة
+            finalResult.style.display = 'block';
+            scoreDisplay.innerText = `${score} / ${totalQuestions}`;
+
+            // رسالة حسب النتيجة
+            if (score === 30) feedbackMsg.innerText = "تبارك الله عليك! راك ضابط المادة 100%.";
+            else if (score >= 20) feedbackMsg.innerText = "مستوى ممتاز! راك واجد للامتحان.";
+            else if (score >= 15) feedbackMsg.innerText = "مستوى متوسط، راجع الأخطاء ديالك.";
+            else feedbackMsg.innerText = "خاصك تزيد تراجع مزيان الـ PDF.";
+        }
+
+        // تشغيل
+        loadQuiz();
+
+    </script>
+</body>
+</html>
